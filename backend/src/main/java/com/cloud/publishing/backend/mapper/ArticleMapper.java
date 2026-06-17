@@ -25,6 +25,8 @@ public interface ArticleMapper {
             Publication publication,
             Category category,
             String author,
-            List<String> coAuthors
+            List<String> coAuthors,
+            boolean published,
+            boolean hasReviews
     );
 }

@@ -8,6 +8,8 @@ public record ArticleGetAllDTO(
         String publicationName,
         String categoryName,
         String author,
-        List<String> coAuthors
+        List<String> coAuthors,
+        boolean published,
+        boolean hasReviews
 ) {
 }

@@ -120,6 +120,12 @@ components:
           description: ФИО соавторов
           items:
             type: string
+        published:
+          type: boolean
+          description: Флаг, указывающий, что статья уже опубликована
+        hasReviews:
+          type: boolean
+          description: Флаг, указывающий, что к статье добавлена хотя бы 1 рецензия
 
     ArticleDTO:
       type: object

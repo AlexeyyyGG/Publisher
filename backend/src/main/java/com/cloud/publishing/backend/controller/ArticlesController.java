@@ -8,6 +8,7 @@ import com.cloud.publishing.backend.service.ArticleService;
 import com.cloud.publishing.backend.service.CategoryService;
 import com.cloud.publishing.backend.service.EmployeeService;
 import com.cloud.publishing.backend.service.PublicationService;
+import com.cloud.publishing.backend.service.ReviewService;
 import com.cloud.publishing.common.constants.Parameters;
 import com.cloud.publishing.common.constants.Urls;
 import com.cloud.publishing.common.dto.ArticleDTO;
@@ -40,12 +41,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(Urls.ARTICLES)
-@PreAuthorize("hasAnyRole('CHIEF_EDITOR', 'JOURNALIST')")
 public class ArticlesController {
     private final ArticleService articleService;
     private final CategoryService categoryService;
     private final PublicationService publicationService;
     private final EmployeeService employeeService;
+    private final ReviewService reviewService;
     private final ArticleMapper mapper;
     private static final Logger logger = LoggerFactory.getLogger(ArticlesController.class);
 
@@ -55,16 +56,19 @@ public class ArticlesController {
             CategoryService categoryService,
             PublicationService publicationService,
             EmployeeService employeeService,
+            ReviewService reviewService,
             ArticleMapper mapper
     ) {
         this.articleService = articleService;
         this.categoryService = categoryService;
         this.publicationService = publicationService;
         this.employeeService = employeeService;
+        this.reviewService = reviewService;
         this.mapper = mapper;
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('CHIEF_EDITOR', 'JOURNALIST')")
     public ResponseEntity<List<ArticleGetAllDTO>> getAll(
             @AuthenticationPrincipal UserPrincipal user,
             Authentication authentication
@@ -77,7 +81,9 @@ public class ArticlesController {
         List<Publication> publications = publicationService.getAll();
         Set<Integer> employeeIds = new HashSet<>();
         for (Article article : articles) {
-            employeeIds.add(article.authorId());
+            if (isChiefEditor) {
+                employeeIds.add(article.authorId());
+            }
             if (article.coAuthorsIds() != null) {
                 employeeIds.addAll(article.coAuthorsIds());
             }
@@ -88,7 +94,8 @@ public class ArticlesController {
                         article,
                         publications,
                         categories,
-                        employees
+                        employees,
+                        isChiefEditor
                 ))
                 .toList();
         logger.debug("Found {} articles", dtos.size());
@@ -96,13 +103,21 @@ public class ArticlesController {
     }
 
     @GetMapping(value = Urls.ID, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ArticleDTO> get(@PathVariable(Parameters.ID) int id) {
+    @PreAuthorize("hasAnyRole('CHIEF_EDITOR', 'JOURNALIST')")
+    public ResponseEntity<ArticleDTO> get(
+            @PathVariable(Parameters.ID) int id,
+            @AuthenticationPrincipal UserPrincipal user,
+            Authentication authentication
+    ) {
         logger.info("get called with id={}", id);
-        Article article = articleService.get(id);
+        boolean isChiefEditor = authentication.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals(ROLE_CHIEF_EDITOR));
+        Article article = articleService.get(id, user.id(), isChiefEditor);
         return ResponseEntity.status(HttpStatus.OK).body(mapper.toResponse(article));
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('JOURNALIST')")
     public ResponseEntity<ArticleDTO> add(
             @Valid @RequestBody ArticleDTO request,
             @AuthenticationPrincipal UserPrincipal user
@@ -113,6 +128,7 @@ public class ArticlesController {
     }
 
     @PutMapping(value = Urls.ID, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('JOURNALIST')")
     public ResponseEntity<ArticleDTO> update(
             @PathVariable(Parameters.ID) int id,
             @Valid @RequestBody ArticleDTO request,
@@ -124,6 +140,7 @@ public class ArticlesController {
     }
 
     @DeleteMapping(value = {Urls.ID})
+    @PreAuthorize("hasRole('JOURNALIST')")
     public ResponseEntity<Void> delete(
             @PathVariable(Parameters.ID) int id,
             @AuthenticationPrincipal UserPrincipal user
@@ -137,7 +154,8 @@ public class ArticlesController {
             Article article,
             List<Publication> publications,
             List<Category> categories,
-            List<EmployeeShort> employees
+            List<EmployeeShort> employees,
+            boolean isChiefEditor
     ) {
         Publication publication = publications.stream()
                 .filter(p -> p.id().equals(article.publicationId()))
@@ -147,22 +165,29 @@ public class ArticlesController {
                 .filter(c -> c.id().equals(article.categoryId()))
                 .findFirst()
                 .orElseThrow();
-        String author = employees.stream()
-                .filter(e -> e.id().equals(article.authorId()))
-                .map(EmployeeShort::getShortName)
-                .findFirst()
-                .orElseThrow();
+        String author = null;
+        if (isChiefEditor) {
+            author = employees.stream()
+                    .filter(e -> e.id().equals(article.authorId()))
+                    .map(EmployeeShort::getShortName)
+                    .findFirst()
+                    .orElseThrow();
+        }
         List<String> coAuthors = employees.stream()
                 .filter(e -> article.coAuthorsIds() != null && article.coAuthorsIds()
                         .contains(e.id()))
                 .map(EmployeeShort::getShortName)
                 .toList();
+        boolean published = reviewService.isArticlePublished(article.id());
+        boolean hasReviews = reviewService.hasReviewsForArticle(article.id());
         return mapper.toGetDTO(
                 article,
                 publication,
                 category,
                 author,
-                coAuthors
+                coAuthors,
+                published,
+                hasReviews
         );
     }
 }
