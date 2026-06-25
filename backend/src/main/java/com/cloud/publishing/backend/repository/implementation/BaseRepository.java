@@ -1,15 +1,19 @@
 package com.cloud.publishing.backend.repository.implementation;
 
+import com.cloud.publishing.backend.repository.RowMapper;
 import com.cloud.publishing.backend.repository.TransactionalOperation;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.sql.DataSource;
 
 public abstract class BaseRepository {
@@ -67,5 +71,31 @@ public abstract class BaseRepository {
             }
         }
         return relations;
+    }
+
+    protected <T> List<T> findById(
+            Set<Integer> ids,
+            String sqlTemplate,
+            RowMapper<T> mapper,
+            String errorMessage
+    ) {
+        if (ids.isEmpty()) {
+            return List.of();
+        }
+        String idString = ids.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(","));
+        String sql = String.format(sqlTemplate, idString);
+        List<T> result = new ArrayList<>();
+        try (Connection connection = dataSource.getConnection();
+                Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery(sql)) {
+            while (resultSet.next()) {
+                result.add(mapper.map(resultSet));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(errorMessage, e);
+        }
+        return result;
     }
 }

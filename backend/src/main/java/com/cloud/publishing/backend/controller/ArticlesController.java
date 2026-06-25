@@ -18,9 +18,10 @@ import com.cloud.publishing.model.Article;
 import com.cloud.publishing.model.publication.Category;
 import com.cloud.publishing.model.publication.Publication;
 import jakarta.validation.Valid;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,18 +78,27 @@ public class ArticlesController {
         boolean isChiefEditor = authentication.getAuthorities().stream()
                 .anyMatch(auth -> auth.getAuthority().equals(ROLE_CHIEF_EDITOR));
         List<Article> articles = articleService.getAll(user.id(), isChiefEditor);
-        List<Category> categories = categoryService.getAll();
-        List<Publication> publications = publicationService.getAll();
-        Set<Integer> employeeIds = new HashSet<>();
-        for (Article article : articles) {
-            if (isChiefEditor) {
-                employeeIds.add(article.authorId());
-            }
-            if (article.coAuthorsIds() != null) {
-                employeeIds.addAll(article.coAuthorsIds());
-            }
-        }
+        Set<Integer> publicationIds = articles.stream()
+                .map(Article::publicationId)
+                .collect(Collectors.toSet());
+        Set<Integer> categoryIds = articles.stream()
+                .map(Article::categoryId)
+                .collect(Collectors.toSet());
+        Set<Integer> employeeIds = articles.stream()
+                .flatMap(article -> {
+                    Stream.Builder<Integer> builder = Stream.builder();
+                    if (isChiefEditor) {
+                        builder.add(article.authorId());
+                    }
+                    if (article.coAuthorsIds() != null) {
+                        article.coAuthorsIds().forEach(builder::add);
+                    }
+                    return builder.build();
+                })
+                .collect(Collectors.toSet());
         List<EmployeeShort> employees = employeeService.getByIds(employeeIds);
+        List<Publication> publications = publicationService.getById(publicationIds);
+        List<Category> categories = categoryService.getById(categoryIds);
         List<ArticleGetAllDTO> dtos = articles.stream()
                 .map(article -> assembleArticleGetAllDTO(
                         article,

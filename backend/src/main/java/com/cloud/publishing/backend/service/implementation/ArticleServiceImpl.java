@@ -48,37 +48,34 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public Article update(int id, ArticleDTO request, Integer currentUserId) {
-        Article existing = repository.get(id);
-        if (!existing.authorId().equals(currentUserId)) {
-            throw new AccessDeniedException(ACCESS_DENIED_ERROR);
-        }
         if (reviewService.isArticlePublished(id)) {
             throw new IllegalStateException(ARTICLE_UPDATE_PUBLISHED_ERROR);
         }
-        validateCoAuthors(request, existing.authorId());
-        Article updated = new Article(
-                existing.id(),
+        Article existingArticle = repository.get(id);
+        if (!existingArticle.authorId().equals(currentUserId)) {
+            throw new AccessDeniedException(ACCESS_DENIED_ERROR);
+        }
+        validateCoAuthors(request, existingArticle.authorId());
+        Article updatedArticle = new Article(
+                existingArticle.id(),
                 request.publicationId(),
                 request.categoryId(),
                 request.name(),
                 request.content(),
-                existing.authorId(),
+                existingArticle.authorId(),
                 request.coAuthorsIds()
         );
-        repository.update(updated);
-        return updated;
+        repository.update(updatedArticle);
+        return updatedArticle;
     }
 
     @Override
     public Article get(int id, Integer currentUserId, boolean isChiefEditor) {
+        if (isChiefEditor || reviewService.isArticlePublished(id)) {
+            return repository.get(id);
+        }
         Article article = repository.get(id);
-        if (isChiefEditor) {
-            return article;
-        }
         if (article.authorId().equals(currentUserId)) {
-            return article;
-        }
-        if (reviewService.isArticlePublished(id)) {
             return article;
         }
         throw new AccessDeniedException(ACCESS_DENIED_ERROR);
@@ -95,15 +92,15 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public void delete(int id, Integer currentUserId) {
-        Article article = repository.get(id);
-        if (!article.authorId().equals(currentUserId)) {
-            throw new AccessDeniedException(ACCESS_DENIED_ERROR);
-        }
         if (reviewService.isArticlePublished(id)) {
             throw new IllegalStateException(ARTICLE_DELETE_PUBLISHED_ERROR);
         }
         if (reviewService.hasReviewsForArticle(id)) {
             throw new IllegalStateException(ARTICLE_HAS_REVIEWS_ERROR);
+        }
+        Article article = repository.get(id);
+        if (!article.authorId().equals(currentUserId)) {
+            throw new AccessDeniedException(ACCESS_DENIED_ERROR);
         }
         repository.delete(id);
     }

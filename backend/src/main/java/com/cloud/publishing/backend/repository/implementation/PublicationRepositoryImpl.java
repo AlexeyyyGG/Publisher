@@ -26,6 +26,7 @@ import static com.cloud.publishing.common.constants.publication.PublicationSQL.I
 import static com.cloud.publishing.common.constants.publication.PublicationSQL.INSERT_PUB_CATEGORY;
 import static com.cloud.publishing.common.constants.publication.PublicationSQL.SQL_DELETE;
 import static com.cloud.publishing.common.constants.publication.PublicationSQL.SQL_EXIST;
+import static com.cloud.publishing.common.constants.publication.PublicationSQL.SQL_FIND_BY_IDS;
 import static com.cloud.publishing.common.constants.publication.PublicationSQL.SQL_GET_ALL_CATEGORIES;
 import static com.cloud.publishing.common.constants.publication.PublicationSQL.SQL_GET_ALL_EDITORS;
 import static com.cloud.publishing.common.constants.publication.PublicationSQL.SQL_GET_ALL_JOURNALISTS;
@@ -262,6 +263,25 @@ public class PublicationRepositoryImpl extends BaseRepository implements Publica
         } catch (SQLException e) {
             throw new RuntimeException(FAILED_TO_GET_MSG, e);
         }
+    }
+
+    @Override
+    public List<Publication> getById(Set<Integer> ids) {
+        return findById(
+                ids,
+                SQL_FIND_BY_IDS,
+                resultSet -> new Publication(
+                        resultSet.getInt(ID),
+                        resultSet.getString(NAME),
+                        PublicationType.valueOf(
+                                resultSet.getString(PUBLICATION_TYPE).toUpperCase()),
+                        resultSet.getString(THEME),
+                        new HashSet<>(),
+                        new HashSet<>(),
+                        new HashSet<>()
+                ),
+                FAILED_TO_GET_MSG
+        );
     }
 
     private List<Publication> loadPublications(Connection connection) throws SQLException {

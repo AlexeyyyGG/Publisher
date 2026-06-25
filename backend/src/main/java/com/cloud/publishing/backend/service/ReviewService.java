@@ -1,6 +1,6 @@
 package com.cloud.publishing.backend.service;
 
-import com.cloud.publishing.common.dto.response.ReviewDetailsDTO;
+import com.cloud.publishing.model.Review;
 import java.util.List;
 
 /**
@@ -11,9 +11,9 @@ public interface ReviewService {
      * Returns list of review details for article.
      *
      * @param articleId identifier of the article
-     * @return list of {@link ReviewDetailsDTO}
+     * @return list of {@link Review}
      */
-    List<ReviewDetailsDTO> getByArticleId(int articleId);
+    List<Review> getByArticleId(int articleId);
 
     /**
      * Checks if article has reviews.

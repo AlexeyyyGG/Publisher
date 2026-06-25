@@ -4,6 +4,7 @@ import com.cloud.publishing.backend.repository.implementation.CategoryRepository
 import com.cloud.publishing.backend.service.CategoryService;
 import com.cloud.publishing.model.publication.Category;
 import java.util.List;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +18,12 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<Category> getAll(){
+    public List<Category> getAll() {
         return categoryRepository.getAll();
     }
 
+    @Override
+    public List<Category> getById(Set<Integer> ids) {
+        return categoryRepository.getById(ids);
+    }
 }
