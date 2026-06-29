@@ -31,4 +31,13 @@ dependencies {
     implementation("com.mysql:mysql-connector-j:8.3.0")
     implementation("com.zaxxer:HikariCP:7.0.2")
     implementation("ch.qos.logback:logback-classic:1.5.6")
+    testImplementation(libs.rest.assured)
+    testImplementation(libs.cucumber.java)
+    testImplementation(libs.cucumber.junit)
+    testImplementation(libs.junit.suite)
+    testImplementation(libs.assertj.core)
+}
+
+tasks.test {
+    useJUnitPlatform()
 }

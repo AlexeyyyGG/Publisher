@@ -25,7 +25,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
         "com.cloud.publishing.backend.security",
         "com.cloud.publishing.backend.config",
         "com.cloud.publishing.backend.mapper",
-        "com.cloud.publishing.backend.controller"
+        "com.cloud.publishing.backend.controller",
+        "com.cloud.publishing.backend.exception"
 })
 public class BackendConfig implements WebMvcConfigurer {
     @Bean
