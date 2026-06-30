@@ -43,7 +43,7 @@ public class CategoryRepositoryImpl extends BaseRepository implements CategoryRe
     }
 
     @Override
-    public List<Category> getById(Set<Integer> ids) {
+    public List<Category> getByIds(Set<Integer> ids) {
         return findById(
                 ids,
                 SQL_FIND_BY_IDS,

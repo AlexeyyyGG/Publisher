@@ -23,5 +23,5 @@ public interface CategoryService {
      * @param ids set of category identifiers
      * @return list of {@link Category}
      */
-    List<Category> getById(Set<Integer> ids);
+    List<Category> getByIds(Set<Integer> ids);
 }

@@ -2,7 +2,8 @@ package com.cloud.publishing.backend.mapper;
 
 import com.cloud.publishing.common.dto.ArticleDTO;
 import com.cloud.publishing.common.dto.response.ArticleGetAllDTO;
-import com.cloud.publishing.model.Article;
+import com.cloud.publishing.model.article.Article;
+import com.cloud.publishing.model.article.ArticleShort;
 import com.cloud.publishing.model.publication.Category;
 import com.cloud.publishing.model.publication.Publication;
 import java.util.List;
@@ -21,7 +22,7 @@ public interface ArticleMapper {
     @Mapping(target = "publicationName", source = "publication.name")
     @Mapping(target = "categoryName", source = "category.name")
     ArticleGetAllDTO toGetDTO(
-            Article article,
+            ArticleShort article,
             Publication publication,
             Category category,
             String author,

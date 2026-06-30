@@ -57,7 +57,7 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
     @Override
-    public List<Publication> getById(Set<Integer> ids) {
-        return repository.getById(ids);
+    public List<Publication> getByIds(Set<Integer> ids) {
+        return repository.getByIds(ids);
     }
 }

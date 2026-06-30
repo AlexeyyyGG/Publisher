@@ -1,6 +1,7 @@
 package com.cloud.publishing.backend.repository;
 
-import com.cloud.publishing.model.Article;
+import com.cloud.publishing.model.article.Article;
+import com.cloud.publishing.model.article.ArticleShort;
 import java.util.List;
 
 /**
@@ -12,7 +13,7 @@ public interface ArticleRepository extends IRepository<Article, Integer> {
      *
      * @return list of {@link Article}
      */
-    List<Article> getAll();
+    List<ArticleShort> getAll();
 
     /**
      * Returns list of articles for specific author.
@@ -20,5 +21,5 @@ public interface ArticleRepository extends IRepository<Article, Integer> {
      * @param id identifier of the author
      * @return list of {@link Article}
      */
-    List<Article> getByAuthorId(Integer id);
+    List<ArticleShort> getByAuthorId(Integer id);
 }

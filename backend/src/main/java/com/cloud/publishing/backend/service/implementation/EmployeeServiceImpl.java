@@ -11,7 +11,6 @@ import com.cloud.publishing.backend.exception.ObjectNotFoundException;
 import com.cloud.publishing.backend.repository.EducationRepository;
 import com.cloud.publishing.model.employee.Education;
 import com.cloud.publishing.model.employee.Employee;
-import com.cloud.publishing.model.employee.Type;
 import java.util.List;
 import com.cloud.publishing.backend.mapper.EmployeeMapper;
 import java.util.Set;
@@ -98,19 +97,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Employee getForUpdate(int id) {
-        return employeeRepository.get(id);
-    }
-
-    @Override
-    public List<EmployeeShort> getByIds(Set<Integer> ids){
-        return employeeRepository.findById(ids);
-    }
-
-    @Override
-    public List<Employee> getByType(Type type){
-        return employeeRepository.getAll().stream()
-                .filter(e -> e.type() == type)
-                .toList();
+    public List<EmployeeShort> getByIds(Set<Integer> ids) {
+        return employeeRepository.findByIds(ids);
     }
 }

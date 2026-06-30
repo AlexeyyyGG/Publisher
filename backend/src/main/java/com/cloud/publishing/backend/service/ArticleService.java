@@ -1,7 +1,8 @@
 package com.cloud.publishing.backend.service;
 
 import com.cloud.publishing.common.dto.ArticleDTO;
-import com.cloud.publishing.model.Article;
+import com.cloud.publishing.model.article.Article;
+import com.cloud.publishing.model.article.ArticleShort;
 import java.util.List;
 
 /**
@@ -12,46 +13,38 @@ public interface ArticleService {
     /**
      * Creates a new article.
      *
-     * @param request       {@link ArticleDTO} containing article data
-     * @param currentUserId identifier of the current authenticated user who creates the article
+     * @param newArticle {@link ArticleDTO} containing article data
      * @return created {@link Article}
      */
-    Article add(ArticleDTO request, Integer currentUserId);
+    Article add(ArticleDTO newArticle);
 
     /**
      * Updates an existing article.
      *
-     * @param id            identifier of the article to update
-     * @param request       {@link ArticleDTO} containing updated article data
-     * @param currentUserId identifier of the current authenticated user who updates the article
+     * @param id identifier of the article to update
      * @return updated {@link Article}
      */
-    Article update(int id, ArticleDTO request, Integer currentUserId);
+    Article update(int id, ArticleDTO articleUpdate);
 
     /**
      * Returns article by id.
      *
-     * @param id            identifier of the article
-     * @param currentUserId identifier of the current authenticated user requesting the article
-     * @param isChiefEditor flag indicating if the current user has the Chief Editor role
+     * @param id identifier of the article
      * @return {@link Article}
      */
-    Article get(int id, Integer currentUserId, boolean isChiefEditor);
+    Article get(int id);
 
     /**
      * Returns list of all articles.
      *
-     * @param currentUserId identifier of the current authenticated user requesting the list
-     * @param isChiefEditor flag indicating if the current user has the Chief Editor role
      * @return list of {@link Article}
      */
-    List<Article> getAll(Integer currentUserId, boolean isChiefEditor);
+    List<ArticleShort> getAll();
 
     /**
      * Deletes article by id.
      *
-     * @param id            identifier of the article to delete
-     * @param currentUserId identifier of the current authenticated user who deletes the article
+     * @param id identifier of the article to delete
      */
-    void delete(int id, Integer currentUserId);
+    void delete(int id);
 }

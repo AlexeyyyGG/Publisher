@@ -7,5 +7,5 @@ import java.util.Set;
 public interface CategoryRepository {
     List<Category> getAll();
 
-    List<Category> getById(Set<Integer> ids);
+    List<Category> getByIds(Set<Integer> ids);
 }

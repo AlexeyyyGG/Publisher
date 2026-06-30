@@ -1,13 +1,12 @@
-package com.cloud.publishing.model;
+package com.cloud.publishing.model.article;
 
 import java.util.Set;
 
-public record Article(
+public record ArticleShort(
         Integer id,
         Integer publicationId,
         Integer categoryId,
         String name,
-        String content,
         Integer authorId,
         Set<Integer> coAuthorsIds
 ) {

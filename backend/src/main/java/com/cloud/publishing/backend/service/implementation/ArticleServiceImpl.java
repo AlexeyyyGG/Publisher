@@ -1,5 +1,6 @@
 package com.cloud.publishing.backend.service.implementation;
 
+import static com.cloud.publishing.backend.security.SecurityConstants.ROLE_CHIEF_EDITOR;
 import static com.cloud.publishing.common.constants.article.ArticleMessage.ACCESS_DENIED_ERROR;
 import static com.cloud.publishing.common.constants.article.ArticleMessage.ARTICLE_DELETE_PUBLISHED_ERROR;
 import static com.cloud.publishing.common.constants.article.ArticleMessage.ARTICLE_HAS_REVIEWS_ERROR;
@@ -9,15 +10,18 @@ import static com.cloud.publishing.common.constants.article.ArticleMessage.SELF_
 
 import com.cloud.publishing.backend.mapper.ArticleMapper;
 import com.cloud.publishing.backend.repository.ArticleRepository;
+import com.cloud.publishing.backend.security.UserPrincipal;
 import com.cloud.publishing.backend.service.ArticleService;
 import com.cloud.publishing.backend.service.PublicationService;
 import com.cloud.publishing.backend.service.ReviewService;
 import com.cloud.publishing.common.dto.ArticleDTO;
-import com.cloud.publishing.model.Article;
+import com.cloud.publishing.model.article.Article;
+import com.cloud.publishing.model.article.ArticleShort;
 import com.cloud.publishing.model.publication.Publication;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -41,57 +45,62 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public Article add(ArticleDTO request, Integer currentUserId) {
-        validateCoAuthors(request, currentUserId);
-        return repository.add(mapper.toEntity(request, currentUserId));
+    public Article add(ArticleDTO newArticle) {
+        UserPrincipal user = currentUser();
+        validateCoAuthors(newArticle, user.id());
+        return repository.add(mapper.toEntity(newArticle, user.id()));
     }
 
     @Override
-    public Article update(int id, ArticleDTO request, Integer currentUserId) {
+    public Article update(int id, ArticleDTO articleUpdate) {
+        UserPrincipal user = currentUser();
         if (reviewService.isArticlePublished(id)) {
             throw new IllegalStateException(ARTICLE_UPDATE_PUBLISHED_ERROR);
         }
         Article existingArticle = repository.get(id);
-        if (!existingArticle.authorId().equals(currentUserId)) {
+        if (!existingArticle.authorId().equals(user.id())) {
             throw new AccessDeniedException(ACCESS_DENIED_ERROR);
         }
-        validateCoAuthors(request, existingArticle.authorId());
+        validateCoAuthors(articleUpdate, existingArticle.authorId());
         Article updatedArticle = new Article(
                 existingArticle.id(),
-                request.publicationId(),
-                request.categoryId(),
-                request.name(),
-                request.content(),
+                articleUpdate.publicationId(),
+                articleUpdate.categoryId(),
+                articleUpdate.name(),
+                articleUpdate.content(),
                 existingArticle.authorId(),
-                request.coAuthorsIds()
+                articleUpdate.coAuthorsIds()
         );
         repository.update(updatedArticle);
         return updatedArticle;
     }
 
     @Override
-    public Article get(int id, Integer currentUserId, boolean isChiefEditor) {
-        if (isChiefEditor || reviewService.isArticlePublished(id)) {
+    public Article get(int id) {
+        UserPrincipal user = currentUser();
+        if (isChiefEditor() || reviewService.isArticlePublished(id)) {
             return repository.get(id);
         }
         Article article = repository.get(id);
-        if (article.authorId().equals(currentUserId)) {
+        if (article.authorId().equals(user.id())) {
             return article;
         }
         throw new AccessDeniedException(ACCESS_DENIED_ERROR);
     }
 
     @Override
-    public List<Article> getAll(Integer currentUserId, boolean isChiefEditor) {
-        if (isChiefEditor) {
+    public List<ArticleShort> getAll() {
+        UserPrincipal user = currentUser();
+        if (isChiefEditor()) {
             return repository.getAll();
         } else {
-            return repository.getByAuthorId(currentUserId);
+            return repository.getByAuthorId(user.id());
         }
     }
 
     @Override
-    public void delete(int id, Integer currentUserId) {
+    public void delete(int id) {
+        UserPrincipal user = currentUser();
         if (reviewService.isArticlePublished(id)) {
             throw new IllegalStateException(ARTICLE_DELETE_PUBLISHED_ERROR);
         }
@@ -99,7 +108,7 @@ public class ArticleServiceImpl implements ArticleService {
             throw new IllegalStateException(ARTICLE_HAS_REVIEWS_ERROR);
         }
         Article article = repository.get(id);
-        if (!article.authorId().equals(currentUserId)) {
+        if (!article.authorId().equals(user.id())) {
             throw new AccessDeniedException(ACCESS_DENIED_ERROR);
         }
         repository.delete(id);
@@ -116,5 +125,19 @@ public class ArticleServiceImpl implements ArticleService {
         if (!publication.journalists().containsAll(request.coAuthorsIds())) {
             throw new IllegalArgumentException(INVALID_CO_AUTHORS_ERROR);
         }
+    }
+
+    private UserPrincipal currentUser() {
+        return (UserPrincipal) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
+    }
+
+    private boolean isChiefEditor() {
+        return SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getAuthorities()
+                .stream()
+                .anyMatch(a -> a.getAuthority().equals(ROLE_CHIEF_EDITOR));
     }
 }

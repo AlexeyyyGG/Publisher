@@ -266,7 +266,7 @@ public class PublicationRepositoryImpl extends BaseRepository implements Publica
     }
 
     @Override
-    public List<Publication> getById(Set<Integer> ids) {
+    public List<Publication> getByIds(Set<Integer> ids) {
         return findById(
                 ids,
                 SQL_FIND_BY_IDS,

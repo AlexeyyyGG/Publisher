@@ -30,7 +30,8 @@ import static com.cloud.publishing.common.constants.article.ArticleSQL.UPDATE_AR
 
 import com.cloud.publishing.backend.exception.ObjectNotFoundException;
 import com.cloud.publishing.backend.repository.ArticleRepository;
-import com.cloud.publishing.model.Article;
+import com.cloud.publishing.model.article.Article;
+import com.cloud.publishing.model.article.ArticleShort;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -107,8 +108,8 @@ public class ArticleRepositoryImpl extends BaseRepository implements ArticleRepo
     }
 
     @Override
-    public List<Article> getAll() {
-        List<Article> articles = new ArrayList<>();
+    public List<ArticleShort> getAll() {
+        List<ArticleShort> articles = new ArrayList<>();
         try (Connection connection = dataSource.getConnection();
                 Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery(SQL_GET_ALL_ARTICLES)) {
@@ -120,12 +121,11 @@ public class ArticleRepositoryImpl extends BaseRepository implements ArticleRepo
                 String name = resultSet.getString(NAME);
                 int authorId = resultSet.getInt(AUTHOR_ID);
                 Set<Integer> coAuthorsIds = allCoAuthors.getOrDefault(id, Set.of());
-                articles.add(new Article(
+                articles.add(new ArticleShort(
                         id,
                         publicationId,
                         categoryId,
                         name,
-                        null,
                         authorId,
                         coAuthorsIds
                 ));
@@ -137,8 +137,8 @@ public class ArticleRepositoryImpl extends BaseRepository implements ArticleRepo
     }
 
     @Override
-    public List<Article> getByAuthorId(Integer authorId) {
-        List<Article> articles = new ArrayList<>();
+    public List<ArticleShort> getByAuthorId(Integer authorId) {
+        List<ArticleShort> articles = new ArrayList<>();
         try (Connection connection = dataSource.getConnection();
                 PreparedStatement statement = connection.prepareStatement(SQL_GET_BY_AUTHOR_ID)) {
             statement.setInt(1, authorId);
@@ -150,12 +150,11 @@ public class ArticleRepositoryImpl extends BaseRepository implements ArticleRepo
                     int categoryId = resultSet.getInt(CATEGORY_ID);
                     String name = resultSet.getString(NAME);
                     Set<Integer> coAuthorsIds = allCoAuthors.getOrDefault(id, Set.of());
-                    articles.add(new Article(
+                    articles.add(new ArticleShort(
                             id,
                             publicationId,
                             categoryId,
                             name,
-                            null,
                             authorId,
                             coAuthorsIds
                     ));

@@ -181,7 +181,7 @@ public class EmployeeRepositoryImpl extends BaseRepository implements EmployeeRe
     }
 
     @Override
-    public List<EmployeeShort> findById(Set<Integer> ids) {
+    public List<EmployeeShort> findByIds(Set<Integer> ids) {
         return findById(
                 ids,
                 SQL_FIND_BY_IDS,

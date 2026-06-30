@@ -23,7 +23,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<Category> getById(Set<Integer> ids) {
-        return categoryRepository.getById(ids);
+    public List<Category> getByIds(Set<Integer> ids) {
+        return categoryRepository.getByIds(ids);
     }
 }

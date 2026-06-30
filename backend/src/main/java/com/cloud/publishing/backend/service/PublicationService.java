@@ -55,5 +55,5 @@ public interface PublicationService {
      * @param ids set of publication identifiers
      * @return list of {@link Publication}
      */
-    List<Publication> getById(Set<Integer> ids);
+    List<Publication> getByIds(Set<Integer> ids);
 }

@@ -7,5 +7,5 @@ import java.util.Set;
 public interface PublicationRepository extends IRepository<Publication, Integer> {
     List<Publication> getAll();
 
-    List<Publication> getById(Set<Integer> ids);
+    List<Publication> getByIds(Set<Integer> ids);
 }
