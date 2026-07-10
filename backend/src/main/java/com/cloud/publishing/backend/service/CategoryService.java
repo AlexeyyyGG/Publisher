@@ -2,6 +2,7 @@ package com.cloud.publishing.backend.service;
 
 import com.cloud.publishing.model.publication.Category;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Service for accessing category reference data.
@@ -15,4 +16,12 @@ public interface CategoryService {
      * @return list of {@link Category}
      */
     List<Category> getAll();
+
+    /**
+     * Returns list of categories for specific identifiers.
+     *
+     * @param ids set of category identifiers
+     * @return list of {@link Category}
+     */
+    List<Category> getByIds(Set<Integer> ids);
 }

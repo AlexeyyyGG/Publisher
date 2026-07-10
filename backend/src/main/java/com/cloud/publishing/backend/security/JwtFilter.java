@@ -3,6 +3,7 @@ package com.cloud.publishing.backend.security;
 import static com.cloud.publishing.backend.security.SecurityConstants.ACCESS_TOKEN_TYPE;
 import static com.cloud.publishing.backend.security.SecurityConstants.TYPE;
 
+import com.cloud.publishing.common.constants.Parameters;
 import com.cloud.publishing.common.constants.Urls;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -60,8 +61,10 @@ public class JwtFilter extends OncePerRequestFilter {
             List<SimpleGrantedAuthority> authorities = roles.stream()
                     .map(SimpleGrantedAuthority::new)
                     .toList();
+            Integer employeeId = claims.get(Parameters.ID,  Integer.class);
+            UserPrincipal principal = new UserPrincipal(employeeId, username);
             UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(username, null, authorities);
+                    new UsernamePasswordAuthenticationToken(principal, null, authorities);
             SecurityContext context = SecurityContextHolder.createEmptyContext();
             context.setAuthentication(authentication);
             SecurityContextHolder.setContext(context);

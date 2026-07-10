@@ -53,12 +53,11 @@ CREATE TABLE publications
 CREATE TABLE articles
 (
     id               INT AUTO_INCREMENT PRIMARY KEY,
-    name             VARCHAR(100)                   NOT NULL,
-    publication_type ENUM ('Magazine', 'Newspaper') NOT NULL,
-    content          TEXT                           NOT NULL,
-    category_id      INT                            NOT NULL,
-    author_id        INT                            NOT NULL,
     publication_id   INT                            NOT NULL,
+    category_id      INT                            NOT NULL,
+    name             VARCHAR(100)                   NOT NULL,
+    content          TEXT                           NOT NULL,
+    author_id        INT                            NOT NULL,
     FOREIGN KEY (category_id) REFERENCES categories (id),
     FOREIGN KEY (author_id) REFERENCES employees (id),
     FOREIGN KEY (publication_id) REFERENCES publications (id)
@@ -85,7 +84,7 @@ CREATE TABLE publication_editors (
     FOREIGN KEY (employee_id) REFERENCES employees(id)
 );
 
-CREATE TABLE article_authors
+CREATE TABLE article_co_authors
 (
     article_id  INT NOT NULL,
     employee_id INT NOT NULL,

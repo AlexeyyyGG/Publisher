@@ -8,6 +8,7 @@ import com.cloud.publishing.backend.exception.ObjectNotFoundException;
 import com.cloud.publishing.model.publication.Publication;
 import java.util.List;
 import com.cloud.publishing.backend.mapper.PublicationMapper;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.cloud.publishing.backend.repository.PublicationRepository;
@@ -53,5 +54,10 @@ public class PublicationServiceImpl implements PublicationService {
         } else {
             throw new ObjectNotFoundException(PUBLICATION_NOT_FOUND_MSG);
         }
+    }
+
+    @Override
+    public List<Publication> getByIds(Set<Integer> ids) {
+        return repository.getByIds(ids);
     }
 }

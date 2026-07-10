@@ -51,7 +51,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import javax.sql.DataSource;
 import org.springframework.stereotype.Repository;
 
@@ -182,25 +181,13 @@ public class EmployeeRepositoryImpl extends BaseRepository implements EmployeeRe
     }
 
     @Override
-    public List<EmployeeShort> findById(Set<Integer> ids) {
-        if (ids.isEmpty()) {
-            return List.of();
-        }
-        String idString = ids.stream()
-                .map(String::valueOf)
-                .collect(Collectors.joining(","));
-        String sql = String.format(SQL_FIND_BY_IDS, idString);
-        List<EmployeeShort> employees = new ArrayList<>();
-        try (Connection connection = dataSource.getConnection();
-                Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery(sql)) {
-            while (resultSet.next()) {
-                employees.add(resultSetToShortEmployee(resultSet));
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(FAILED_TO_GET_MSG, e);
-        }
-        return employees;
+    public List<EmployeeShort> findByIds(Set<Integer> ids) {
+        return findById(
+                ids,
+                SQL_FIND_BY_IDS,
+                this::resultSetToShortEmployee,
+                FAILED_TO_GET_MSG
+        );
     }
 
     @Override

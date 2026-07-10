@@ -3,6 +3,7 @@ package com.cloud.publishing.backend.service;
 import com.cloud.publishing.common.dto.request.PublicationRequest;
 import com.cloud.publishing.model.publication.Publication;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Service interface for managing publications. Provides operations for creating, updating,
@@ -47,4 +48,12 @@ public interface PublicationService {
      * @param id identifier of the publication to delete
      */
     void delete(int id);
+
+    /**
+     * Returns list of publications for specific identifiers.
+     *
+     * @param ids set of publication identifiers
+     * @return list of {@link Publication}
+     */
+    List<Publication> getByIds(Set<Integer> ids);
 }

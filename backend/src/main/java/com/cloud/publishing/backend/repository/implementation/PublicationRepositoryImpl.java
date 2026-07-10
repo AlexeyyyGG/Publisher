@@ -26,6 +26,7 @@ import static com.cloud.publishing.common.constants.publication.PublicationSQL.I
 import static com.cloud.publishing.common.constants.publication.PublicationSQL.INSERT_PUB_CATEGORY;
 import static com.cloud.publishing.common.constants.publication.PublicationSQL.SQL_DELETE;
 import static com.cloud.publishing.common.constants.publication.PublicationSQL.SQL_EXIST;
+import static com.cloud.publishing.common.constants.publication.PublicationSQL.SQL_FIND_BY_IDS;
 import static com.cloud.publishing.common.constants.publication.PublicationSQL.SQL_GET_ALL_CATEGORIES;
 import static com.cloud.publishing.common.constants.publication.PublicationSQL.SQL_GET_ALL_EDITORS;
 import static com.cloud.publishing.common.constants.publication.PublicationSQL.SQL_GET_ALL_JOURNALISTS;
@@ -47,7 +48,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -234,16 +234,19 @@ public class PublicationRepositoryImpl extends BaseRepository implements Publica
             Map<Integer, Set<Integer>> categories = loadRelations(
                     connection,
                     SQL_GET_ALL_CATEGORIES,
+                    PUBLICATION_ID,
                     CATEGORY_ID
             );
             Map<Integer, Set<Integer>> journalists = loadRelations(
                     connection,
                     SQL_GET_ALL_JOURNALISTS,
+                    PUBLICATION_ID,
                     EMPLOYEE_ID
             );
             Map<Integer, Set<Integer>> editors = loadRelations(
                     connection,
                     SQL_GET_ALL_EDITORS,
+                    PUBLICATION_ID,
                     EMPLOYEE_ID
             );
             return publications.stream()
@@ -260,6 +263,25 @@ public class PublicationRepositoryImpl extends BaseRepository implements Publica
         } catch (SQLException e) {
             throw new RuntimeException(FAILED_TO_GET_MSG, e);
         }
+    }
+
+    @Override
+    public List<Publication> getByIds(Set<Integer> ids) {
+        return findById(
+                ids,
+                SQL_FIND_BY_IDS,
+                resultSet -> new Publication(
+                        resultSet.getInt(ID),
+                        resultSet.getString(NAME),
+                        PublicationType.valueOf(
+                                resultSet.getString(PUBLICATION_TYPE).toUpperCase()),
+                        resultSet.getString(THEME),
+                        new HashSet<>(),
+                        new HashSet<>(),
+                        new HashSet<>()
+                ),
+                FAILED_TO_GET_MSG
+        );
     }
 
     private List<Publication> loadPublications(Connection connection) throws SQLException {
@@ -280,24 +302,6 @@ public class PublicationRepositoryImpl extends BaseRepository implements Publica
             }
         }
         return publications;
-    }
-
-    private Map<Integer, Set<Integer>> loadRelations(
-            Connection connection,
-            String sql,
-            String colName
-    ) throws SQLException {
-        Map<Integer, Set<Integer>> relations = new HashMap<>();
-        try (Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery(sql)) {
-            while (resultSet.next()) {
-                int publicationId = resultSet.getInt(PUBLICATION_ID);
-                int linkedId = resultSet.getInt(colName);
-                relations.computeIfAbsent(publicationId, k -> new HashSet<>())
-                        .add(linkedId);
-            }
-        }
-        return relations;
     }
 
     private PreparedStatement prepareDeleteConnections(

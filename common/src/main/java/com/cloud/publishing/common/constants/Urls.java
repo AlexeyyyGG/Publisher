@@ -18,4 +18,7 @@ public class Urls {
     public static final String EDUCATIONS = "/educations";
     public static final String CATEGORIES ="/categories";
     public static final String LOGOUT = "/logout";
+    public static final String ARTICLES = "/articles";
+    public static final String REVIEWS = "/reviews";
+    public static final String ARTICLES_BY_ID_FOR_REVIEWS = "/articles/{articleId}";
 }

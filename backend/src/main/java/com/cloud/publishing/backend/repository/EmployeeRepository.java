@@ -9,7 +9,7 @@ import java.util.Set;
 public interface EmployeeRepository extends IRepository<Employee, Integer> {
     List<Employee> getAll();
 
-    List<EmployeeShort> findById(Set<Integer> ids);
+    List<EmployeeShort> findByIds(Set<Integer> ids);
 
     Optional<Employee> findByEmail(String email);
 

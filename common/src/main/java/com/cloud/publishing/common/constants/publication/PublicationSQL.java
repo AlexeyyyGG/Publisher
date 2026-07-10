@@ -38,4 +38,8 @@ public class PublicationSQL {
     public static final String SQL_GET_ALL_CATEGORIES = "SELECT publication_id, category_id FROM publication_categories";
     public static final String SQL_GET_ALL_JOURNALISTS = "SELECT publication_id, employee_id FROM publication_journalists";
     public static final String SQL_GET_ALL_EDITORS = "SELECT publication_id, employee_id FROM publication_editors";
+    public static final String SQL_FIND_BY_IDS = """
+            SELECT id, name, publication_type, theme
+            FROM publications
+            WHERE id IN (%s)""";
 }

@@ -4,7 +4,6 @@ import com.cloud.publishing.common.dto.request.EmployeeRequest;
 import com.cloud.publishing.common.dto.request.EmployeeUpdateRequest;
 import com.cloud.publishing.common.dto.response.EmployeeShort;
 import com.cloud.publishing.model.employee.Employee;
-import com.cloud.publishing.model.employee.Type;
 import java.util.List;
 import java.util.Set;
 
@@ -39,14 +38,6 @@ public interface EmployeeService {
     Employee get(int id);
 
     /**
-     * Returns employee data prepared for update form.
-     *
-     * @param id identifier of the employee
-     * @return {@link Employee}
-     */
-    Employee getForUpdate(int id);
-
-    /**
      * Returns list of all employees.
      *
      * @return list of {@link Employee}
@@ -60,14 +51,6 @@ public interface EmployeeService {
      * @return list of {@link EmployeeShort}
      */
     List<EmployeeShort> getByIds(Set<Integer> ids);
-
-    /**
-     * Returns employees by type.
-     *
-     * @param type employee com.cloud.publishing.model.Type
-     * @return list of {@link Employee}
-     */
-    List<Employee> getByType(Type type);
 
     /**
      * Deletes employee by id.

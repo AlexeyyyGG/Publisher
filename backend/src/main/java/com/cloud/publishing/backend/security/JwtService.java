@@ -4,6 +4,7 @@ import static com.cloud.publishing.backend.security.SecurityConstants.ACCESS_TOK
 import static com.cloud.publishing.backend.security.SecurityConstants.REFRESH_TOKEN_TYPE;
 import static com.cloud.publishing.backend.security.SecurityConstants.TYPE;
 
+import com.cloud.publishing.common.constants.Parameters;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -49,6 +50,9 @@ public class JwtService {
                 .claim(TYPE, type)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration));
+        if(userDetails instanceof EmployeeDetails employee){
+            builder.claim(Parameters.ID, employee.getId());
+        }
         if (ACCESS_TOKEN_TYPE.equals(type)) {
             builder.claim(ROLES, userDetails.getAuthorities().stream()
                     .map(GrantedAuthority::getAuthority)
