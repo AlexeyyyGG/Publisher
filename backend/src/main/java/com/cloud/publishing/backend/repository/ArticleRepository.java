@@ -11,7 +11,7 @@ public interface ArticleRepository extends IRepository<Article, Integer> {
     /**
      * Returns list of all articles.
      *
-     * @return list of {@link Article}
+     * @return list of {@link ArticleShort}
      */
     List<ArticleShort> getAll();
 
@@ -19,7 +19,7 @@ public interface ArticleRepository extends IRepository<Article, Integer> {
      * Returns list of articles for specific author.
      *
      * @param id identifier of the author
-     * @return list of {@link Article}
+     * @return list of {@link ArticleShort}
      */
     List<ArticleShort> getByAuthorId(Integer id);
 }

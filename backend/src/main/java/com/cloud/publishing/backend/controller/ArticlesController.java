@@ -1,13 +1,12 @@
 package com.cloud.publishing.backend.controller;
 
-import static com.cloud.publishing.backend.security.SecurityConstants.ROLE_CHIEF_EDITOR;
-
 import com.cloud.publishing.backend.mapper.ArticleMapper;
 import com.cloud.publishing.backend.service.ArticleService;
 import com.cloud.publishing.backend.service.CategoryService;
 import com.cloud.publishing.backend.service.EmployeeService;
 import com.cloud.publishing.backend.service.PublicationService;
 import com.cloud.publishing.backend.service.ReviewService;
+import com.cloud.publishing.backend.security.SecurityUtils;
 import com.cloud.publishing.common.constants.Parameters;
 import com.cloud.publishing.common.constants.Urls;
 import com.cloud.publishing.common.dto.ArticleDTO;
@@ -29,7 +28,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -69,10 +67,9 @@ public class ArticlesController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('CHIEF_EDITOR', 'JOURNALIST')")
-    public ResponseEntity<List<ArticleGetAllDTO>> getAll(Authentication authentication) {
+    public ResponseEntity<List<ArticleGetAllDTO>> getAll() {
         logger.info("getAll called");
-        boolean isChiefEditor = authentication.getAuthorities().stream()
-                .anyMatch(auth -> auth.getAuthority().equals(ROLE_CHIEF_EDITOR));
+        boolean isChiefEditor = SecurityUtils.isChiefEditor();
         List<ArticleShort> articles = articleService.getAll();
         Set<Integer> publicationIds = articles.stream()
                 .map(ArticleShort::publicationId)

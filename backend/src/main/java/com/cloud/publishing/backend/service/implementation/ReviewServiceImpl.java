@@ -1,6 +1,6 @@
 package com.cloud.publishing.backend.service.implementation;
 
-import com.cloud.publishing.backend.repository.implementation.ReviewRepositoryImpl;
+import com.cloud.publishing.backend.repository.ReviewRepository;
 import com.cloud.publishing.backend.service.ReviewService;
 import com.cloud.publishing.model.Review;
 import java.util.List;
@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ReviewServiceImpl implements ReviewService {
-    private final ReviewRepositoryImpl reviewRepository;
+    private final ReviewRepository reviewRepository;
 
     @Autowired
-    public ReviewServiceImpl(ReviewRepositoryImpl reviewRepository) {
+    public ReviewServiceImpl(ReviewRepository reviewRepository) {
         this.reviewRepository = reviewRepository;
     }
 
