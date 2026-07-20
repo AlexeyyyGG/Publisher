@@ -1,9 +1,9 @@
-package com.cloud.publishing.backend.steps;
+package com.cloud.publishing.itest.steps;
 
-import com.cloud.publishing.backend.config.RestUtils;
-import com.cloud.publishing.backend.context.TestContext;
-import com.cloud.publishing.backend.constants.ContextKeys;
-import com.cloud.publishing.backend.dto.EmployeeListItem;
+import com.cloud.publishing.itest.config.RestUtils;
+import com.cloud.publishing.itest.context.TestContext;
+import com.cloud.publishing.itest.constants.ContextKeys;
+import com.cloud.publishing.itest.dto.EmployeeListItem;
 import com.cloud.publishing.common.constants.Urls;
 import com.cloud.publishing.common.dto.response.EmployeeResponse;
 import io.cucumber.datatable.DataTable;

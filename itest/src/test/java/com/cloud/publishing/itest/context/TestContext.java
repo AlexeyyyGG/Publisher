@@ -1,4 +1,4 @@
-package com.cloud.publishing.backend.context;
+package com.cloud.publishing.itest.context;
 
 import java.util.HashMap;
 import java.util.Map;
