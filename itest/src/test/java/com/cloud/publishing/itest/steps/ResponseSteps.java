@@ -1,8 +1,8 @@
-package com.cloud.publishing.backend.steps;
+package com.cloud.publishing.itest.steps;
 
-import com.cloud.publishing.backend.config.RestUtils;
-import com.cloud.publishing.backend.constants.ContextKeys;
-import com.cloud.publishing.backend.context.TestContext;
+import com.cloud.publishing.itest.config.RestUtils;
+import com.cloud.publishing.itest.constants.ContextKeys;
+import com.cloud.publishing.itest.context.TestContext;
 import io.cucumber.java.en.Then;
 import io.restassured.response.Response;
 

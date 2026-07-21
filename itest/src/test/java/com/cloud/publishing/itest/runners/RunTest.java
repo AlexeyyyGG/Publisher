@@ -1,4 +1,4 @@
-package com.cloud.publishing.backend.runners;
+package com.cloud.publishing.itest.runners;
 
 import static io.cucumber.core.options.Constants.GLUE_PROPERTY_NAME;
 
@@ -10,6 +10,6 @@ import org.junit.platform.suite.api.Suite;
 @Suite
 @IncludeEngines("cucumber")
 @SelectPackages("features")
-@ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "com.cloud.publishing.backend.steps")
+@ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "com.cloud.publishing.itest.steps")
 public class RunTest {
 }

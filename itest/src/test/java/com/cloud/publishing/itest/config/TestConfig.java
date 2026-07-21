@@ -1,4 +1,4 @@
-package com.cloud.publishing.backend.config;
+package com.cloud.publishing.itest.config;
 
 import java.io.IOException;
 import java.io.InputStream;

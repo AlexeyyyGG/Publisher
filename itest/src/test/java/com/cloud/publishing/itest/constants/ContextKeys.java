@@ -1,4 +1,4 @@
-package com.cloud.publishing.backend.constants;
+package com.cloud.publishing.itest.constants;
 
 public class ContextKeys {
     private ContextKeys() {

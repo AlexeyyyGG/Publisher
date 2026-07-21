@@ -1,4 +1,4 @@
-package com.cloud.publishing.backend.dto;
+package com.cloud.publishing.itest.dto;
 
 public record EmployeeListItem(
         String firstName,
