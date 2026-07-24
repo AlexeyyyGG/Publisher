@@ -1,5 +1,11 @@
 Feature: Get employees
 
+  Background:
+    Given The following employees exist in the system:
+      | firstName | lastName | middleName | email           | password  | gender | birthYear | address | educationId | type       | chiefEditor |
+      | Петр      | Иванов   | Иванович   | test1@gmail.com | password1 | MALE   | 1985      | test    | 6           | EDITOR     | true        |
+      | Иван      | Петров   | Петрович   | test2@gmail.com | password2 | MALE   | 1993      | test    | 3           | JOURNALIST | false       |
+
   Scenario Outline: Authenticated employee get the employee list
     When The employee logs in with email "<email>" and password "<password>"
     And The user requests the list of all employees

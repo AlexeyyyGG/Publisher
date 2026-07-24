@@ -26,4 +26,16 @@ public class TestConfig {
     public static String getBaseUrl() {
         return getProperty("backend.url");
     }
+
+    public static String getDbUrl() {
+        return getProperty("db.url");
+    }
+
+    public static String getDbUser() {
+        return getProperty("db.user");
+    }
+
+    public static String getDbPassword() {
+        return getProperty("db.password");
+    }
 }

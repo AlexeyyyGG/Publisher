@@ -28,7 +28,7 @@ dependencies {
     implementation(libs.jackson.databind)
     compileOnly(libs.servlet.api)
     implementation(libs.tomcat.jasper)
-    implementation("com.mysql:mysql-connector-j:8.3.0")
+    implementation(libs.mysql.connector)
     implementation("com.zaxxer:HikariCP:7.0.2")
     implementation("ch.qos.logback:logback-classic:1.5.6")
 }
