@@ -23,10 +23,10 @@ import java.util.Map;
 import org.assertj.core.api.Assertions;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
-public class GetEmployeesSteps {
+public class EmployeesSteps {
     private static final String INVALID_TOKEN = "invalidToken";
 
-    @Given("The following employees exist in the system:")
+    @Given("Create employees in the system:")
     public void theFollowingEmployeesExist(List<Map<String, String>> employeesTable) {
         try (Connection conn = DriverManager.getConnection(
                 TestConfig.getDbUrl(),

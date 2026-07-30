@@ -24,18 +24,38 @@ public class TestConfig {
     }
 
     public static String getBaseUrl() {
-        return getProperty("backend.url");
+        String env = System.getenv("BACKEND_URL");
+        if (env != null) {
+            return env;
+        } else {
+            return getProperty("backend.url");
+        }
     }
 
     public static String getDbUrl() {
-        return getProperty("db.url");
+        String env = System.getenv("DB_URL");
+        if (env != null) {
+            return env;
+        } else {
+            return getProperty("db.url");
+        }
     }
 
     public static String getDbUser() {
-        return getProperty("db.user");
+        String env = System.getenv("DB_USER");
+        if (env != null) {
+            return env;
+        } else {
+            return getProperty("db.user");
+        }
     }
 
     public static String getDbPassword() {
-        return getProperty("db.password");
+        String env = System.getenv("DB_PASSWORD");
+        if (env != null) {
+            return env;
+        } else {
+            return getProperty("db.password");
+        }
     }
 }

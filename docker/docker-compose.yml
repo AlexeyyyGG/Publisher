@@ -1,7 +1,6 @@
 services:
   mysql:
-    build: .
-    container_name: mysql
+    image: mysql:8.0
     environment:
       MYSQL_ROOT_PASSWORD: root_password
       MYSQL_DATABASE: cloud_publishing
@@ -11,6 +10,8 @@ services:
       - "23306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+      - ./schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ./local-data.sql:/docker-entrypoint-initdb.d/02-local-data.sql
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-uroot", "-proot_password", "-h", "localhost" ]
       interval: 3s

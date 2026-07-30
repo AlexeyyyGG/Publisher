@@ -1,14 +1,14 @@
 package com.cloud.publishing.itest.hooks;
 
 import com.cloud.publishing.itest.config.TestConfig;
-import io.cucumber.java.After;
+import io.cucumber.java.Before;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 public class DataBaseHooks {
-    @After
+    @Before
     public void cleanUp() {
         try (Connection connection = DriverManager.getConnection(TestConfig.getDbUrl(),
                 TestConfig.getDbUser(), TestConfig.getDbPassword());

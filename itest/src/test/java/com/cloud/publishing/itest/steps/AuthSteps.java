@@ -23,7 +23,7 @@ public class AuthSteps {
     private static final String ACCESS_TOKEN = "accessToken";
     private static final String REFRESH_TOKEN = "refreshToken";
 
-    @Given("An employee exists with email {string} and password {string}")
+    @Given("Create employee with email {string} and password {string}")
     public void employeeExists(String email, String password) {
         try (Connection connection = DriverManager.getConnection(
                 TestConfig.getDbUrl(),
