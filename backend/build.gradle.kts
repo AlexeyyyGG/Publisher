@@ -3,10 +3,15 @@ plugins {
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
+tasks.jar {
+    enabled = false
+}
+
 tasks.shadowJar {
     archiveClassifier.set("")
+    mergeServiceFiles()
     manifest {
-        attributes["Main-Class"] = "com.cloud.publishing.backend.Application"
+        attributes("Main-Class" to "com.cloud.publishing.backend.Application")
     }
 }
 

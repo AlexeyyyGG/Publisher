@@ -1,4 +1,4 @@
-FROM gradle:8.7-jdk17
+FROM eclipse-temurin:17-jdk
 WORKDIR /app
-COPY . .
-CMD ["gradle", ":itest:test", "--no-daemon"]
+COPY itest/build/libs/itest.jar app.jar
+ENTRYPOINT ["java","-jar","app.jar"]

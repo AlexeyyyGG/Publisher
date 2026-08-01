@@ -1,7 +1,11 @@
 Feature: Login employee
 
+  Background:
+    Given Create employees in the system:
+      | firstName | lastName | middleName | email           | password  | gender | birthYear | address | educationId | type   | chiefEditor |
+      | Петр      | Иванов   | Иванович   | test1@gmail.com | password1 | male   | 1985      | test    | 6           | Editor | true        |
+
   Scenario: Successful login returns authentication token
-    Given Create employee with email "test1@gmail.com" and password "password1"
     When The employee logs in with email "test1@gmail.com" and password "password1"
     Then The response status code should be 200
     And The response should contain a valid tokens
