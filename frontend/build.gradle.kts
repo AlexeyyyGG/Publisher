@@ -3,12 +3,8 @@ plugins {
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
-tasks.shadowJar {
-    archiveClassifier.set("")
-    manifest {
-        attributes["Main-Class"] = "com.cloud.publishing.frontend.Application"
-    }
-    mergeServiceFiles()
+tasks.jar {
+    enabled = false
 }
 
 dependencies {
@@ -30,4 +26,16 @@ dependencies {
     implementation("jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0")
     implementation("com.auth0:java-jwt:4.4.0")
     implementation("org.eclipse.jdt:ecj:3.33.0")
+}
+
+tasks.shadowJar {
+    archiveClassifier.set("")
+    manifest {
+        attributes["Main-Class"] = "com.cloud.publishing.frontend.Application"
+    }
+    mergeServiceFiles()
+}
+
+tasks.assemble {
+    dependsOn(tasks.shadowJar)
 }
