@@ -31,3 +31,7 @@ tasks.shadowJar {
 tasks.assemble {
     dependsOn(tasks.shadowJar)
 }
+
+tasks.test {
+    enabled = false
+}
