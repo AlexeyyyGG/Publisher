@@ -3,10 +3,15 @@ plugins {
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
+tasks.jar {
+    enabled = false
+}
+
 tasks.shadowJar {
     archiveClassifier.set("")
+    mergeServiceFiles()
     manifest {
-        attributes["Main-Class"] = "com.cloud.publishing.backend.Application"
+        attributes("Main-Class" to "com.cloud.publishing.backend.Application")
     }
 }
 
@@ -28,11 +33,11 @@ dependencies {
     implementation(libs.jackson.databind)
     compileOnly(libs.servlet.api)
     implementation(libs.tomcat.jasper)
-    implementation("com.mysql:mysql-connector-j:8.3.0")
+    implementation(libs.mysql.connector)
     implementation("com.zaxxer:HikariCP:7.0.2")
     implementation("ch.qos.logback:logback-classic:1.5.6")
 }
 
-tasks.test {
-    useJUnitPlatform()
+tasks.assemble {
+    dependsOn(tasks.shadowJar)
 }

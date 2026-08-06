@@ -11,6 +11,7 @@ cucumber = "7.34.3"
 junitPlatform = "6.1.0"
 restAssured = "6.0.0"
 assertj = "3.27.7"
+mysqlConnector = "8.3.0"
 
 [libraries]
 spring-context = { module = "org.springframework:spring-context", version.ref = "spring" }
@@ -35,3 +36,4 @@ cucumber-java = { group = "io.cucumber", name = "cucumber-java", version.ref = "
 cucumber-junit = { group = "io.cucumber", name = "cucumber-junit-platform-engine", version.ref = "cucumber" }
 junit-suite = { group = "org.junit.platform", name = "junit-platform-suite", version.ref = "junitPlatform" }
 assertj-core = { group = "org.assertj", name = "assertj-core", version.ref = "assertj" }
+mysql-connector = { group = "com.mysql", name = "mysql-connector-j", version.ref = "mysqlConnector" }
