@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -138,6 +139,16 @@ public class ArticlesController {
         logger.info("delete called with id {}", id);
         articleService.delete(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @GetMapping(value = Urls.CO_AUTHORS, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('JOURNALIST', 'CHIEF_EDITOR')")
+    public ResponseEntity<List<EmployeeShort>> getCoAuthors(
+            @RequestParam(Parameters.PUBLICATION_ID) int publicationId
+    ) {
+        logger.info("getCoAuthorsList called for publicationId = {}", publicationId);
+        List<EmployeeShort> coAuthors = articleService.getCoAuthors(publicationId);
+        return ResponseEntity.ok(coAuthors);
     }
 
     private ArticleGetAllDTO assembleArticleGetAllDTO(

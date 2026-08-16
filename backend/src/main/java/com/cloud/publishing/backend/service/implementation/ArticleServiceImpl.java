@@ -11,12 +11,15 @@ import com.cloud.publishing.backend.mapper.ArticleMapper;
 import com.cloud.publishing.backend.repository.ArticleRepository;
 import com.cloud.publishing.backend.security.UserPrincipal;
 import com.cloud.publishing.backend.service.ArticleService;
+import com.cloud.publishing.backend.service.EmployeeService;
 import com.cloud.publishing.backend.service.PublicationService;
 import com.cloud.publishing.backend.service.ReviewService;
 import com.cloud.publishing.backend.security.SecurityUtils;
 import com.cloud.publishing.common.dto.ArticleDTO;
+import com.cloud.publishing.common.dto.response.EmployeeShort;
 import com.cloud.publishing.model.article.Article;
 import com.cloud.publishing.model.article.ArticleShort;
+import com.cloud.publishing.model.employee.Type;
 import com.cloud.publishing.model.publication.Publication;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,18 +32,21 @@ public class ArticleServiceImpl implements ArticleService {
     private final ArticleMapper mapper;
     private final PublicationService publicationService;
     private final ReviewService reviewService;
+    private final EmployeeService employeeService;
 
     @Autowired
     public ArticleServiceImpl(
             ArticleRepository repository,
             ArticleMapper mapper,
             PublicationService publicationService,
-            ReviewService reviewService
+            ReviewService reviewService,
+            EmployeeService employeeService
     ) {
         this.repository = repository;
         this.mapper = mapper;
         this.publicationService = publicationService;
         this.reviewService = reviewService;
+        this.employeeService = employeeService;
     }
 
     @Override
@@ -111,6 +117,23 @@ public class ArticleServiceImpl implements ArticleService {
             throw new AccessDeniedException(ACCESS_DENIED_ERROR);
         }
         repository.delete(id);
+    }
+
+    @Override
+    public List<EmployeeShort> getCoAuthors(int publicationId) {
+        UserPrincipal user = SecurityUtils.currentUser();
+        Publication publication = publicationService.get(publicationId);
+        return employeeService.getAll().stream()
+                .filter(e -> e.type() == Type.JOURNALIST)
+                .filter(e -> publication.journalists().contains(e.id()))
+                .filter(e -> !e.id().equals(user.id()))
+                .map(e -> new EmployeeShort(
+                        e.id(),
+                        e.firstName(),
+                        e.lastName(),
+                        e.middleName()
+                ))
+                .toList();
     }
 
     private void validateCoAuthors(ArticleDTO article, Integer currentUserId) {
