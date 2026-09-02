@@ -19,7 +19,6 @@ import com.cloud.publishing.common.dto.ArticleDTO;
 import com.cloud.publishing.common.dto.response.EmployeeShort;
 import com.cloud.publishing.model.article.Article;
 import com.cloud.publishing.model.article.ArticleShort;
-import com.cloud.publishing.model.employee.Type;
 import com.cloud.publishing.model.publication.Publication;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -123,17 +122,7 @@ public class ArticleServiceImpl implements ArticleService {
     public List<EmployeeShort> getCoAuthors(int publicationId) {
         UserPrincipal user = SecurityUtils.currentUser();
         Publication publication = publicationService.get(publicationId);
-        return employeeService.getAll().stream()
-                .filter(e -> e.type() == Type.JOURNALIST)
-                .filter(e -> publication.journalists().contains(e.id()))
-                .filter(e -> !e.id().equals(user.id()))
-                .map(e -> new EmployeeShort(
-                        e.id(),
-                        e.firstName(),
-                        e.lastName(),
-                        e.middleName()
-                ))
-                .toList();
+        return employeeService.getCoAuthors(publication.journalists(), user.id());
     }
 
     private void validateCoAuthors(ArticleDTO article, Integer currentUserId) {

@@ -34,6 +34,7 @@ import static com.cloud.publishing.common.constants.employee.EmployeeSQL.SQL_LIS
 import static com.cloud.publishing.common.constants.employee.EmployeeSQL.SQL_RESET_CE;
 import static com.cloud.publishing.common.constants.employee.EmployeeSQL.SQL_UPDATE_WITH_PASSWORD;
 import static com.cloud.publishing.common.constants.employee.EmployeeSQL.SQL_UPDATE_WITHOUT_PASSWORD;
+import static com.cloud.publishing.common.constants.employee.EmployeeSQL.SQL_FIND_CO_AUTHORS;
 
 import com.cloud.publishing.backend.repository.EmployeeRepository;
 import com.cloud.publishing.common.dto.response.EmployeeShort;
@@ -51,6 +52,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.sql.DataSource;
 import org.springframework.stereotype.Repository;
 
@@ -231,6 +233,34 @@ public class EmployeeRepositoryImpl extends BaseRepository implements EmployeeRe
         } catch (SQLException e) {
             throw new RuntimeException(FAILED_TO_GET_MSG, e);
         }
+    }
+
+    @Override
+    public List<EmployeeShort> findCoAuthors(Set<Integer> journalistIds, int currentUserId) {
+        if (journalistIds.isEmpty()) {
+            return List.of();
+        }
+        String placeholders = journalistIds.stream()
+                .map(id -> "?")
+                .collect(Collectors.joining(", "));
+        String sql = SQL_FIND_CO_AUTHORS.formatted(placeholders);
+        List<EmployeeShort> result = new ArrayList<>();
+        try (Connection connection = dataSource.getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, currentUserId);
+            int parameterIndex = 2;
+            for (Integer journalistId : journalistIds) {
+                statement.setInt(parameterIndex++, journalistId);
+            }
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    result.add(resultSetToShortEmployee(resultSet));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Ошибка получения соавторов", e);
+        }
+        return result;
     }
 
     private EmployeeShort resultSetToShortEmployee(ResultSet resultSet) throws SQLException {

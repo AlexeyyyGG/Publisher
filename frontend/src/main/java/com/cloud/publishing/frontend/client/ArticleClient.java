@@ -18,44 +18,42 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @Component
 public class ArticleClient {
-    @Value("${backend.url}")
-    private String backendUrl;
+    private final String baseArticleUrl;
     private final RestTemplate restTemplate;
 
     @Autowired
-    public ArticleClient(@Qualifier("apiRestTemplate") RestTemplate restTemplate) {
+    public ArticleClient(
+            @Qualifier("apiRestTemplate") RestTemplate restTemplate,
+            @Value("${backend.url}") String backendUrl
+    ) {
         this.restTemplate = restTemplate;
+        this.baseArticleUrl = backendUrl + Urls.ARTICLES;
     }
 
     public List<ArticleGetAllDTO> getAll() {
-        String finalUrl = backendUrl + Urls.ARTICLES;
         return Arrays.asList(Objects.requireNonNull(
-                restTemplate.getForEntity(finalUrl, ArticleGetAllDTO[].class).getBody())
+                restTemplate.getForEntity(baseArticleUrl, ArticleGetAllDTO[].class).getBody())
         );
     }
 
     public ArticleDTO get(int id) {
-        String finalUrl = backendUrl + Urls.ARTICLES;
-        return restTemplate.getForObject(finalUrl + "/" + id, ArticleDTO.class);
+        return restTemplate.getForObject(baseArticleUrl + "/" + id, ArticleDTO.class);
     }
 
     public void add(ArticleDTO request) {
-        String finalUrl = backendUrl + Urls.ARTICLES;
-        restTemplate.postForObject(finalUrl, request, ArticleDTO.class);
+        restTemplate.postForObject(baseArticleUrl, request, ArticleDTO.class);
     }
 
     public void update(int id, ArticleDTO request) {
-        String finalUrl = backendUrl + Urls.ARTICLES;
-        restTemplate.put(finalUrl + "/" + id, request);
+        restTemplate.put(baseArticleUrl + "/" + id, request);
     }
 
     public void delete(int id) {
-        String finalUrl = backendUrl + Urls.ARTICLES;
-        restTemplate.delete(finalUrl + "/" + id);
+        restTemplate.delete(baseArticleUrl + "/" + id);
     }
 
     public List<EmployeeShort> getCoAuthors(int publicationId) {
-        String finalUrl = backendUrl + Urls.ARTICLES + Urls.CO_AUTHORS;
+        String finalUrl = baseArticleUrl + Urls.CO_AUTHORS;
         URI uri = UriComponentsBuilder
                 .fromUriString(finalUrl)
                 .queryParam(Parameters.PUBLICATION_ID, publicationId)

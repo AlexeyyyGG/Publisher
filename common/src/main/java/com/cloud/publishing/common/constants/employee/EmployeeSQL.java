@@ -39,4 +39,11 @@ public class EmployeeSQL {
             SELECT id, first_name, last_name, middle_name
             FROM employees
             WHERE id IN (%s)""";
+    public static final String SQL_FIND_CO_AUTHORS = """
+            SELECT id, first_name, last_name, middle_name
+            FROM employees
+            WHERE type = 'JOURNALIST'
+              AND id <> ?
+              AND id IN (%s)
+            """;
 }

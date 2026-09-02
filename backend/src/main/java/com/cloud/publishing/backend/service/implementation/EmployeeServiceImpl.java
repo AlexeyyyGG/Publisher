@@ -100,4 +100,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     public List<EmployeeShort> getByIds(Set<Integer> ids) {
         return employeeRepository.findByIds(ids);
     }
+
+    @Override
+    public List<EmployeeShort> getCoAuthors(Set<Integer> journalistIds, int currentUserId) {
+        return employeeRepository.findCoAuthors(journalistIds, currentUserId);
+    }
 }
