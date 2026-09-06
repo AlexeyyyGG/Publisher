@@ -161,3 +161,4 @@ target/
 docker.txtgtore
 /.gradle
 **/build/
+!gradle/wrapper/gradle-wrapper.jar
