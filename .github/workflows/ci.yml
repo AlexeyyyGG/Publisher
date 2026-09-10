@@ -1,4 +1,4 @@
-name: Build
+name: Build and Integration Tests
 
 on: push
 
@@ -14,6 +14,39 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - run: chmod +x gradlew
+      - name: Build Project
+        run: chmod +x gradlew && ./gradlew clean build
 
-      - run: ./gradlew clean build
+      - name: Upload Backend Jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-jar
+          path: backend/build/libs/backend.jar
+
+      - name: Upload ITest Jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: itest-jar
+          path: itest/build/libs/itest.jar
+
+  integration-tests:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download Backend Jar
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-jar
+          path: backend/build/libs
+
+      - name: Download ITest Jar
+        uses: actions/download-artifact@v4
+        with:
+          name: itest-jar
+          path: itest/build/libs
+
+      - name: Run Integration Tests
+        run: docker compose -f docker/docker-compose.itest.yml up --build --abort-on-container-exit --exit-code-from itest
