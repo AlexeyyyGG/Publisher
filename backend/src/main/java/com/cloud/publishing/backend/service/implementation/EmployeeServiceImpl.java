@@ -102,7 +102,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<EmployeeShort> getCoAuthors(Set<Integer> journalistIds, int currentUserId) {
-        return employeeRepository.findCoAuthors(journalistIds, currentUserId);
+    public List<EmployeeShort> getJournalists(Set<Integer> journalistIds) {
+        return employeeRepository.findCoAuthors(journalistIds);
     }
 }

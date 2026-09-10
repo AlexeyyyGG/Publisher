@@ -56,10 +56,9 @@ public interface EmployeeService {
      * Returns list of co-authors by journalist IDs excluding current user.
      *
      * @param journalistIds journalist IDs to filter
-     * @param currentUserId identifier of the current user to exclude
      * @return list of {@link EmployeeShort}
      */
-    List<EmployeeShort> getCoAuthors(Set<Integer> journalistIds, int currentUserId);
+    List<EmployeeShort> getJournalists(Set<Integer> journalistIds);
     /**
      * Deletes employee by id.
      *

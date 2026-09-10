@@ -236,7 +236,7 @@ public class EmployeeRepositoryImpl extends BaseRepository implements EmployeeRe
     }
 
     @Override
-    public List<EmployeeShort> findCoAuthors(Set<Integer> journalistIds, int currentUserId) {
+    public List<EmployeeShort> findCoAuthors(Set<Integer> journalistIds) {
         if (journalistIds.isEmpty()) {
             return List.of();
         }
@@ -247,8 +247,7 @@ public class EmployeeRepositoryImpl extends BaseRepository implements EmployeeRe
         List<EmployeeShort> result = new ArrayList<>();
         try (Connection connection = dataSource.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, currentUserId);
-            int parameterIndex = 2;
+            int parameterIndex = 1;
             for (Integer journalistId : journalistIds) {
                 statement.setInt(parameterIndex++, journalistId);
             }

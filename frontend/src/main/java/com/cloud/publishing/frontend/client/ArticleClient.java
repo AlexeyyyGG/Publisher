@@ -20,6 +20,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class ArticleClient {
     private final String baseArticleUrl;
     private final RestTemplate restTemplate;
+    private final String coAuthorsUrl;
 
     @Autowired
     public ArticleClient(
@@ -28,6 +29,7 @@ public class ArticleClient {
     ) {
         this.restTemplate = restTemplate;
         this.baseArticleUrl = backendUrl + Urls.ARTICLES;
+        this.coAuthorsUrl = baseArticleUrl + Urls.CO_AUTHORS;
     }
 
     public List<ArticleGetAllDTO> getAll() {
@@ -53,9 +55,8 @@ public class ArticleClient {
     }
 
     public List<EmployeeShort> getCoAuthors(int publicationId) {
-        String finalUrl = baseArticleUrl + Urls.CO_AUTHORS;
         URI uri = UriComponentsBuilder
-                .fromUriString(finalUrl)
+                .fromUriString(coAuthorsUrl)
                 .queryParam(Parameters.PUBLICATION_ID, publicationId)
                 .build()
                 .toUri();
