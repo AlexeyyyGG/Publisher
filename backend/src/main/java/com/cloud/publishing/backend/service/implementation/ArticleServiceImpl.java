@@ -21,6 +21,7 @@ import com.cloud.publishing.model.article.Article;
 import com.cloud.publishing.model.article.ArticleShort;
 import com.cloud.publishing.model.publication.Publication;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -123,9 +124,10 @@ public class ArticleServiceImpl implements ArticleService {
     public List<EmployeeShort> getCoAuthors(int publicationId) {
         UserPrincipal user = SecurityUtils.currentUser();
         Publication publication = publicationService.get(publicationId);
-        return employeeService.getJournalists(publication.journalists().stream()
+        Set<Integer> coAuthorsIds = publication.journalists().stream()
                 .filter(id -> !id.equals(user.id()))
-                .collect(Collectors.toSet()));
+                .collect(Collectors.toSet());
+        return employeeService.getJournalists(coAuthorsIds);
     }
 
     private void validateCoAuthors(ArticleDTO article, Integer currentUserId) {
