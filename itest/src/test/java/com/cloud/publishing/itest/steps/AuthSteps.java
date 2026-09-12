@@ -37,6 +37,7 @@ public class AuthSteps {
         Assertions.assertThat(actualRefreshToken)
                 .as("Refresh token is missing or empty")
                 .isNotEmpty();
+        Assertions.assertThat(true).isFalse();
     }
 
     @Then("The response error details should be match {string}, status {int} and message {string}")
