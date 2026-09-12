@@ -1,6 +1,7 @@
 package com.cloud.publishing.backend.service;
 
 import com.cloud.publishing.common.dto.ArticleDTO;
+import com.cloud.publishing.common.dto.response.EmployeeShort;
 import com.cloud.publishing.model.article.Article;
 import com.cloud.publishing.model.article.ArticleShort;
 import java.util.List;
@@ -47,4 +48,12 @@ public interface ArticleService {
      * @param id identifier of the article to delete
      */
     void delete(int id);
+
+    /**
+     * Returns journalists associated with the publication.
+     *
+     * @param publicationId identifier of the publication
+     * @return list of journalists
+     */
+    List<EmployeeShort> getCoAuthors(int publicationId);
 }

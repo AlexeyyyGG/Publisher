@@ -30,7 +30,6 @@ import com.cloud.publishing.common.dto.response.PublicationGetDTO;
 import com.cloud.publishing.backend.service.PublicationService;
 
 @RestController
-@PreAuthorize("hasRole('CHIEF_EDITOR')")
 @RequestMapping(Urls.PUBLICATIONS)
 public class PublicationsController {
     private final PublicationService publicationService;
@@ -53,6 +52,7 @@ public class PublicationsController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('CHIEF_EDITOR', 'JOURNALIST')")
     public ResponseEntity<List<PublicationGetDTO>> getAll() {
         logger.info("getAll called");
         List<Publication> publications = publicationService.getAll();
@@ -70,6 +70,7 @@ public class PublicationsController {
     }
 
     @GetMapping(value = Urls.ID, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('CHIEF_EDITOR', 'JOURNALIST')")
     public ResponseEntity<PublicationResponse> get(@PathVariable(Parameters.ID) int id) {
         logger.info("get called with id={}", id);
         Publication publication = publicationService.get(id);
@@ -77,6 +78,7 @@ public class PublicationsController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('CHIEF_EDITOR')")
     public ResponseEntity<PublicationResponse> add(@RequestBody PublicationRequest request) {
         logger.info("add called with: {}", request);
         Publication publication = publicationService.add(request);
@@ -85,6 +87,7 @@ public class PublicationsController {
     }
 
     @PutMapping(value = Urls.ID, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('CHIEF_EDITOR')")
     public ResponseEntity<PublicationResponse> update(
             @PathVariable(Parameters.ID) int id,
             @RequestBody PublicationRequest request
@@ -95,6 +98,7 @@ public class PublicationsController {
     }
 
     @DeleteMapping(value = {Urls.ID})
+    @PreAuthorize("hasRole('CHIEF_EDITOR')")
     public ResponseEntity<Void> delete(@PathVariable(Parameters.ID) int id) {
         logger.info("delete called with id {}", id);
         publicationService.delete(id);

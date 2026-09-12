@@ -5,4 +5,5 @@ public class Parameters {
     }
 
     public static final String ID = "id";
+    public static final String PUBLICATION_ID = "publicationId";
 }

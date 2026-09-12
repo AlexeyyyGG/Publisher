@@ -15,5 +15,4 @@ public class EmployeeMessage {
     public static final String FAILED_TO_ADD_NO_ID = "Создание сотрудника не удалось, EDUCATION_ID не получен";
     public static final String FAILED_TO_ADD_NO_ROWS = "Создание сотрудника не удалось, ни одна запись не была добавлена";
     public static final String PASSWORD_MISMATCH_OR_CONFIRMATION_MISSING_MSG = "Пароли не совпадают или подтверждение отсутствует";
-    public static final String FAILED_TO_FETCH_EMPLOYEES_BY_TYPE = "Не удалось получить сотрудников по типу";
 }

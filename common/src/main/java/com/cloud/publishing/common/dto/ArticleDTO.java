@@ -3,6 +3,7 @@ package com.cloud.publishing.common.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.util.HashSet;
 import java.util.Set;
 
 public record ArticleDTO(
@@ -18,4 +19,13 @@ public record ArticleDTO(
         String content,
         Set<Integer> coAuthorsIds
 ) {
+    public static ArticleDTO empty() {
+        return new ArticleDTO(
+                null,
+                null,
+                null,
+                null,
+                new HashSet<>()
+        );
+    }
 }

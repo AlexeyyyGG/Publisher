@@ -13,5 +13,7 @@ public interface EmployeeRepository extends IRepository<Employee, Integer> {
 
     Optional<Employee> findByEmail(String email);
 
+    List<EmployeeShort> findCoAuthors(Set<Integer> journalistIds);
+
     void resetChiefEditor();
 }

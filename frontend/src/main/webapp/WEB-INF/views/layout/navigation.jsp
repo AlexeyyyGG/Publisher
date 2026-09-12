@@ -22,6 +22,14 @@
                 </a>
             </li>
         </c:if>
+        <c:if test="${pageContext.request.isUserInRole('ROLE_CHIEF_EDITOR') ||
+         pageContext.request.isUserInRole('ROLE_JOURNALIST')}">
+            <li class="navigation_item">
+                <a href="${pageContext.request.contextPath}/web/articles">
+                    Статьи
+                </a>
+            </li>
+        </c:if>
         <li class="navigation_item">
             <form action="${pageContext.request.contextPath}/logout"
                   method="post"
