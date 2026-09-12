@@ -36,6 +36,8 @@ dependencies {
     implementation(libs.mysql.connector)
     implementation("com.zaxxer:HikariCP:7.0.2")
     implementation("ch.qos.logback:logback-classic:1.5.6")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.10.2")
 }
 
 tasks.assemble {
